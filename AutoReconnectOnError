@@ -2,7 +2,7 @@ local TS = game:GetService("TeleportService")
 local HS = game:GetService("HttpService")
 local LP = game.Players.LocalPlayer
 local CG = game:GetService("CoreGui")
-local PLACE = 8267733039
+local PLACE = 8267733039--game marketPlaceID
 local function tpToServer()
 	local success, res = pcall(function()
 		return HS:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..PLACE.."/servers/Public?sortOrder=Asc&limit=10"))
