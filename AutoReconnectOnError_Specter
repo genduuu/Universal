@@ -2,15 +2,17 @@ local TeleportService = game:GetService("TeleportService")
 local LocalPlayer = game.Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
 
+local TARGET_PLACE_ID = 8267733039
+
 local robloxGui = CoreGui:WaitForChild("RobloxPromptGui", 1)
 if robloxGui then
 	robloxGui.DescendantAdded:Connect(function(d)
 		if d:IsA("TextLabel") and d.Text then
 			local msg = d.Text:lower()
 			if msg:find("you were kicked") or msg:find("error code") then
-				warn("Detected kick or error. Rejoining...")
+				warn("Detected kick or error. Teleporting to marketplace place...")
 				task.wait(0.4)
-				TeleportService:Teleport(game.PlaceId, LocalPlayer)
+				TeleportService:Teleport(TARGET_PLACE_ID, LocalPlayer)
 			end
 		end
 	end)
