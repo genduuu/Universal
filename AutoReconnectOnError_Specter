@@ -1,18 +1,31 @@
-local TeleportService = game:GetService("TeleportService")
-local LocalPlayer = game.Players.LocalPlayer
-local CoreGui = game:GetService("CoreGui")
-
-local TARGET_PLACE_ID = 8267733039
-
-local robloxGui = CoreGui:WaitForChild("RobloxPromptGui", 1)
-if robloxGui then
-	robloxGui.DescendantAdded:Connect(function(d)
+local TS = game:GetService("TeleportService")
+local HS = game:GetService("HttpService")
+local LP = game.Players.LocalPlayer
+local CG = game:GetService("CoreGui")
+local PLACE = 8267733039
+local function tpToServer()
+	local success, res = pcall(function()
+		return HS:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..PLACE.."/servers/Public?sortOrder=Asc&limit=10"))
+	end)
+	if success and res and res.data then
+		for _, srv in ipairs(res.data) do
+			if srv.playing > 0 then
+				TS:TeleportToPlaceInstance(PLACE, srv.id, LP)
+				return
+			end
+		end
+	end
+	TS:Teleport(PLACE, LP)
+end
+local gui = CG:WaitForChild("RobloxPromptGui", 1)
+if gui then
+	gui.DescendantAdded:Connect(function(d)
 		if d:IsA("TextLabel") and d.Text then
-			local msg = d.Text:lower()
-			if msg:find("you were kicked") or msg:find("error code") then
-				warn("Detected kick or error. Teleporting to marketplace place...")
+			local t = d.Text:lower()
+			if t:find("you were kicked") or t:find("error code") then
+				warn("Error detected, teleporting...")
 				task.wait(0.4)
-				TeleportService:Teleport(TARGET_PLACE_ID, LocalPlayer)
+				tpToServer()
 			end
 		end
 	end)
